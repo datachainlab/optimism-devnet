@@ -32,6 +32,12 @@ OP_TAG=op-node/v1.16.11 make chain
 make devnet-up
 ```
 
+To use a specific Lodestar version:
+
+```bash
+LODESTAR_VERSION=v1.42.0 make devnet-up
+```
+
 ### Stop Devnet
 
 ```bash

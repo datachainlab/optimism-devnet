@@ -1,5 +1,6 @@
 SED = $(shell which gsed 2>/dev/null || echo sed)
 OP_TAG ?= op-node/v1.16.11
+LODESTAR_VERSION ?= v1.41.1
 
 .PHONY: chain
 chain:
@@ -13,7 +14,7 @@ chain:
 
 .PHONY: devnet-up
 devnet-up:
-	cd devnet/kurtosis-devnet && just simple-devnet
+	cd devnet/kurtosis-devnet && LODESTAR_VERSION=$(LODESTAR_VERSION) just simple-devnet
 
 .PHONY: devnet-down
 devnet-down:
