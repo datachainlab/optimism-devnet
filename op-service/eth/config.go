@@ -50,9 +50,9 @@ func L1ChainConfigByChainID(chainID ChainID) *params.ChainConfig {
 			CancunTime:              newUint64(0),
 			PragueTime:              newUint64(0),
 			OsakaTime:               newUint64(0),
-			BPO1Time:                newUint64(0),
-			BPO2Time:                newUint64(genesisTimestamp + 1*8*6),
-			AmsterdamTime:           newUint64(genesisTimestamp + 2*8*6),
+			BPO1Time:                newUint64(0),                         // bpo_1_epoch: 0 (genesis)
+			BPO2Time:                newUint64(genesisTimestamp + 1*8*6), // bpo_2_epoch: 1 = 48 seconds
+			AmsterdamTime:           newUint64(genesisTimestamp + 2*8*6), // gloas_fork_epoch: 2 = 96 seconds
 			DepositContractAddress: common.HexToAddress("0x00000000219ab540356cbb839cbe05303d7705fa"),
 			BlobScheduleConfig: &params.BlobScheduleConfig{
 				Cancun:    params.DefaultCancunBlobConfig,
@@ -60,6 +60,7 @@ func L1ChainConfigByChainID(chainID ChainID) *params.ChainConfig {
 				Osaka:     params.DefaultOsakaBlobConfig,
 				BPO1:      params.DefaultBPO1BlobConfig,
 				BPO2:      params.DefaultBPO2BlobConfig,
+				Amsterdam: params.DefaultBPO2BlobConfig,
 			},
 		}
 	}
