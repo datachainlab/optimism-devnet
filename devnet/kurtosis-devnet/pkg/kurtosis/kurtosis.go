@@ -278,6 +278,7 @@ func (d *KurtosisDeployer) Deploy(ctx context.Context, input io.Reader) (*spec.E
 		run.WithKurtosisRunnerDryRun(d.dryRun),
 		run.WithKurtosisRunnerEnclave(d.enclave),
 		run.WithKurtosisRunnerKurtosisContext(d.kurtosisCtx),
+		run.WithKurtosisRunnerBaseDir(d.baseDir),
 	)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create Kurtosis runner: %w", err)

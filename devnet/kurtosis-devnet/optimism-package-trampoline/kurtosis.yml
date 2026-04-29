@@ -2,7 +2,7 @@ name: github.com/ethereum-optimism/optimism/kurtosis-devnet/optimism-package-tra
 description: |-
   A trampoline package for optimism-package. This one is reproducible, due to the replace directives below.
 replace:
-  github.com/datachainlab/optimism-package: github.com/datachainlab/optimism-package@3be9d819b5b72ae776974d86dfdc10c6afb18b6e
-  github.com/ethpandaops/ethereum-package: github.com/ethpandaops/ethereum-package@e964e305a19d56b798800e84d264f97b87952c55
+  github.com/datachainlab/optimism-package: github.com/datachainlab/optimism-package@ee9cdfb6474f31e03ffc1036f45ee31fedafe5a8
+  github.com/ethpandaops/ethereum-package: github.com/ethpandaops/ethereum-package@d793f8cb0aebc1218f870f52ea61c8007129203c
   github.com/kurtosis-tech/prometheus-package: github.com/kurtosis-tech/prometheus-package@637c9dea933be18e47f96cadc0d9bb0e3a5aa9d6 # v1.0.0
   github.com/kurtosis-tech/postgres-package: github.com/kurtosis-tech/postgres-package@9cbdde2c55e8d1656deb87821465a2ad244d8b33 # v1.0.0

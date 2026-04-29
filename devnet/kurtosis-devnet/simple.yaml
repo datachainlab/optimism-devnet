@@ -76,20 +76,22 @@ optimism_package:
 ethereum_package:
   participants:
     - el_type: geth
+      el_image: ethpandaops/geth:glamsterdam-devnet-0
       cl_type: lodestar
-      cl_image: chainsafe/lodestar:{{ env "LODESTAR_VERSION" | default "v1.41.1" }}
-      vc_image: chainsafe/lodestar:{{ env "LODESTAR_VERSION" | default "v1.41.1" }}
+      cl_image: ethpandaops/lodestar:glamsterdam-devnet-0
+      vc_image: ethpandaops/lodestar:glamsterdam-devnet-0
       supernode: true
   network_params:
     preset: minimal
     fulu_fork_epoch: 0
+    gloas_fork_epoch: 2
+    genesis_delay: 5
     bpo_1_epoch: 0
     bpo_1_max_blobs: 15
     bpo_1_target_blobs: 10
     bpo_2_epoch: 1 # required to be bigger than bpo_1_epoch
     bpo_2_max_blobs: 21
     bpo_2_target_blobs: 14
-    genesis_delay: 5
     additional_preloaded_contracts: |
       {
         "0x4e59b44847b379578588920cA78FbF26c0B4956C": {

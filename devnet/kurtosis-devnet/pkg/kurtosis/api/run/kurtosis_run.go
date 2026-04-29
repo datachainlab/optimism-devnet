@@ -1,11 +1,15 @@
 package run
 
 import (
+	"bufio"
 	"context"
 	"errors"
 	"fmt"
 	"io"
 	"os"
+	"os/exec"
+	"path/filepath"
+	"strings"
 
 	"github.com/datachainlab/optimism-devnet/devnet/kurtosis-devnet/pkg/kurtosis/api/enclave"
 	"github.com/datachainlab/optimism-devnet/devnet/kurtosis-devnet/pkg/kurtosis/api/interfaces"
@@ -18,6 +22,7 @@ import (
 type KurtosisRunner struct {
 	dryRun      bool
 	enclave     string
+	baseDir     string
 	kurtosisCtx interfaces.KurtosisContextInterface
 	runHandlers []MessageHandler
 	tracer      trace.Tracer
@@ -34,6 +39,12 @@ func WithKurtosisRunnerDryRun(dryRun bool) KurtosisRunnerOptions {
 func WithKurtosisRunnerEnclave(enclave string) KurtosisRunnerOptions {
 	return func(r *KurtosisRunner) {
 		r.enclave = enclave
+	}
+}
+
+func WithKurtosisRunnerBaseDir(baseDir string) KurtosisRunnerOptions {
+	return func(r *KurtosisRunner) {
+		r.baseDir = baseDir
 	}
 }
 
@@ -67,6 +78,89 @@ func NewKurtosisRunner(opts ...KurtosisRunnerOptions) (*KurtosisRunner, error) {
 	return r, nil
 }
 
+// isLocalPackage checks if the package path is a local path (not a remote GitHub reference)
+func isLocalPackage(packageName string) bool {
+	return strings.HasPrefix(packageName, "./") || strings.HasPrefix(packageName, "/") || strings.HasPrefix(packageName, "../")
+}
+
+// runViaCLI runs the kurtosis package using the CLI command
+func (r *KurtosisRunner) runViaCLI(ctx context.Context, packageName string, args io.Reader) error {
+	// Resolve the package path
+	var packagePath string
+	if filepath.IsAbs(packageName) {
+		packagePath = packageName
+	} else {
+		packagePath = filepath.Join(r.baseDir, packageName)
+	}
+
+	// Create a temp file for args if provided
+	var argsFile string
+	if args != nil {
+		argsBytes, err := io.ReadAll(args)
+		if err != nil {
+			return fmt.Errorf("failed to read args: %w", err)
+		}
+		tmpFile, err := os.CreateTemp("", "kurtosis-args-*.yaml")
+		if err != nil {
+			return fmt.Errorf("failed to create temp file for args: %w", err)
+		}
+		defer os.Remove(tmpFile.Name())
+		if _, err := tmpFile.Write(argsBytes); err != nil {
+			tmpFile.Close()
+			return fmt.Errorf("failed to write args to temp file: %w", err)
+		}
+		tmpFile.Close()
+		argsFile = tmpFile.Name()
+	}
+
+	// Build the kurtosis command
+	cmdArgs := []string{"run", packagePath, "--enclave", r.enclave}
+	if argsFile != "" {
+		cmdArgs = append(cmdArgs, "--args-file", argsFile)
+	}
+
+	cmd := exec.CommandContext(ctx, "kurtosis", cmdArgs...)
+	cmd.Dir = r.baseDir
+
+	// Create pipes for stdout and stderr
+	stdout, err := cmd.StdoutPipe()
+	if err != nil {
+		return fmt.Errorf("failed to create stdout pipe: %w", err)
+	}
+	stderr, err := cmd.StderrPipe()
+	if err != nil {
+		return fmt.Errorf("failed to create stderr pipe: %w", err)
+	}
+
+	// Start the command
+	if err := cmd.Start(); err != nil {
+		return fmt.Errorf("failed to start kurtosis CLI: %w", err)
+	}
+
+	// Stream stdout
+	go func() {
+		scanner := bufio.NewScanner(stdout)
+		for scanner.Scan() {
+			fmt.Println(scanner.Text())
+		}
+	}()
+
+	// Stream stderr
+	go func() {
+		scanner := bufio.NewScanner(stderr)
+		for scanner.Scan() {
+			fmt.Fprintln(os.Stderr, scanner.Text())
+		}
+	}()
+
+	// Wait for the command to complete
+	if err := cmd.Wait(); err != nil {
+		return fmt.Errorf("kurtosis CLI failed: %w", err)
+	}
+
+	return nil
+}
+
 func (r *KurtosisRunner) Run(ctx context.Context, packageName string, args io.Reader) error {
 	ctx, span := r.tracer.Start(ctx, fmt.Sprintf("run package %s", packageName))
 	defer span.End()
@@ -82,6 +176,11 @@ func (r *KurtosisRunner) Run(ctx context.Context, packageName string, args io.Re
 			fmt.Println()
 		}
 		return nil
+	}
+
+	// Use CLI for local packages to work around SDK compatibility issues with Kurtosis 1.18+
+	if isLocalPackage(packageName) {
+		return r.runViaCLI(ctx, packageName, args)
 	}
 
 	mgr, err := enclave.NewKurtosisEnclaveManager(

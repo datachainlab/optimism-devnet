@@ -51,15 +51,15 @@ func L1ChainConfigByChainID(chainID ChainID) *params.ChainConfig {
 			PragueTime:              newUint64(0),
 			OsakaTime:               newUint64(0),
 			BPO1Time:                newUint64(0),
-			// 1 epoch * 8 slot * 6 seconds
-			BPO2Time:               newUint64(genesisTimestamp + 1*8*6),
+			BPO2Time:                newUint64(genesisTimestamp + 1*8*6),
+			AmsterdamTime:           newUint64(genesisTimestamp + 2*8*6),
 			DepositContractAddress: common.HexToAddress("0x00000000219ab540356cbb839cbe05303d7705fa"),
 			BlobScheduleConfig: &params.BlobScheduleConfig{
-				Cancun: params.DefaultCancunBlobConfig,
-				Prague: params.DefaultPragueBlobConfig,
-				Osaka:  params.DefaultOsakaBlobConfig,
-				BPO1:   params.DefaultBPO1BlobConfig,
-				BPO2:   params.DefaultBPO2BlobConfig,
+				Cancun:    params.DefaultCancunBlobConfig,
+				Prague:    params.DefaultPragueBlobConfig,
+				Osaka:     params.DefaultOsakaBlobConfig,
+				BPO1:      params.DefaultBPO1BlobConfig,
+				BPO2:      params.DefaultBPO2BlobConfig,
 			},
 		}
 	}

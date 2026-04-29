@@ -4,11 +4,12 @@ Kurtosis-based devnet for Optimism development.
 
 ## Requirements
 
-- **kurtosis**: 1.15.2
+- **kurtosis**: 1.18.1
 
 ## Supported Versions
 
-- **op-node**: v1.16.10 or later
+- **op-node**: v1.16.13 or later
+- **lodestar**: v1.42.0 or later
 
 ## Usage
 

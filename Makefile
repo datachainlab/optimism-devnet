@@ -1,6 +1,6 @@
 SED = $(shell which gsed 2>/dev/null || echo sed)
-OP_TAG ?= op-node/v1.16.11
-LODESTAR_VERSION ?= v1.41.1
+OP_TAG ?= op-node/v1.16.13
+LODESTAR_VERSION ?= v1.42.0
 
 .PHONY: chain
 chain:
