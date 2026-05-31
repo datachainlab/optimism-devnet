@@ -76,6 +76,7 @@ optimism_package:
 ethereum_package:
   participants:
     - el_type: geth
+      el_image: ethereum/client-go:{{ env "GETH_VERSION" | default "v1.17.3" }}
       cl_type: lodestar
       cl_image: chainsafe/lodestar:{{ env "LODESTAR_VERSION" | default "v1.41.1" }}
       vc_image: chainsafe/lodestar:{{ env "LODESTAR_VERSION" | default "v1.41.1" }}
