@@ -9,7 +9,7 @@ import (
 	"github.com/datachainlab/optimism-devnet/devnet/kurtosis-devnet/pkg/kurtosis/sources/inspect"
 	"github.com/datachainlab/optimism-devnet/devnet/kurtosis-devnet/pkg/kurtosis/sources/spec"
 	"github.com/ethereum-optimism/optimism/op-service/eth"
-	"github.com/ethereum-optimism/optimism/op-supervisor/supervisor/backend/depset"
+	"github.com/ethereum-optimism/optimism/op-core/interop/depset"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

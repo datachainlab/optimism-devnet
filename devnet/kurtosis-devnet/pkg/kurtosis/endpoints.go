@@ -8,7 +8,7 @@ import (
 	"github.com/datachainlab/optimism-devnet/devnet/devnet-sdk/descriptors"
 	"github.com/datachainlab/optimism-devnet/devnet/kurtosis-devnet/pkg/kurtosis/sources/inspect"
 	"github.com/datachainlab/optimism-devnet/devnet/kurtosis-devnet/pkg/kurtosis/sources/spec"
-	"github.com/ethereum-optimism/optimism/op-supervisor/supervisor/backend/depset"
+	"github.com/ethereum-optimism/optimism/op-core/interop/depset"
 )
 
 // ServiceFinder is the main entry point for finding services and their endpoints
