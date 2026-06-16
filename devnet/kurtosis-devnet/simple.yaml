@@ -75,12 +75,23 @@ optimism_package:
   global_tolerations: []
   persistent: false
 ethereum_package:
+  # The package defaults to ethereum-genesis-generator:5.0.6, which sets
+  # amsterdamTime in the genesis but does NOT emit an `amsterdam` entry in
+  # `blobSchedule`. geth rejects that ("missing entry for fork amsterdam in
+  # blobSchedule"). 6.x emits the amsterdam blob schedule for gloas/Amsterdam.
+  ethereum_genesis_generator_params:
+    image: ethpandaops/ethereum-genesis-generator:6.0.8
   participants:
+    # L1 EL: geth's BAL devnet build (glamsterdam-devnet-5 EL track is based on
+    # BAL). This works now that the trampoline points ethereum-package at
+    # d793f8cb, which dropped the geth `--allow-insecure-unlock` flag that older
+    # builds removed. (ethrex:glamsterdam-devnet-5 was unusable: its eth_call
+    # enforces nonce equality, which breaks op-deployer's `apply` step.)
     - el_type: geth
-      el_image: ethpandaops/geth:glamsterdam-devnet-0
+      el_image: ethpandaops/geth:bal-devnet-7
       cl_type: lodestar
-      cl_image: ethpandaops/lodestar:glamsterdam-devnet-0
-      vc_image: ethpandaops/lodestar:glamsterdam-devnet-0
+      cl_image: ethpandaops/lodestar:glamsterdam-devnet-5
+      vc_image: ethpandaops/lodestar:glamsterdam-devnet-5
       supernode: true
   network_params:
     preset: minimal
