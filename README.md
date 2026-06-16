@@ -6,11 +6,6 @@ Kurtosis-based devnet for Optimism development.
 
 - **kurtosis**: 1.18.1
 
-## Supported Versions
-
-- **op-node**: v1.16.13 or later
-- **lodestar**: v1.42.0 or later
-
 ## Usage
 
 ### Setup
@@ -24,7 +19,7 @@ make chain
 To use a specific version:
 
 ```bash
-OP_TAG=op-node/v1.16.11 make chain
+OP_TAG=op-node/v1.19.0 make chain
 ```
 
 ### Start Devnet
@@ -33,10 +28,10 @@ OP_TAG=op-node/v1.16.11 make chain
 make devnet-up
 ```
 
-To use a specific Lodestar version:
+To use specific client versions:
 
 ```bash
-LODESTAR_VERSION=v1.42.0 make devnet-up
+GETH_VERSION=v1.17.3 LODESTAR_VERSION=v1.43.0 make devnet-up
 ```
 
 ### Stop Devnet
