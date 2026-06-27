@@ -9,7 +9,26 @@ _kurtosis-run PACKAGE_NAME ARG_FILE ENCLAVE:
 	kurtosis run {{PACKAGE_NAME}} --args-file {{ARG_FILE}} --enclave {{ENCLAVE}} --show-enclave-inspect=false --image-download=missing
 
 _prestate-build PATH='.':
-    docker buildx build --output {{PATH}} --progress plain -f ../../chain/op-program/Dockerfile.repro ../../chain/
+    #!/usr/bin/env bash
+    set -euo pipefail
+    # op-program was removed in op v1.19.1; the cannon absolute prestate is now
+    # produced by the kona-based reproducible build. The Dockerfile always copies
+    # from the `kona-custom-configs` named context, so point it at an empty temp
+    # dir (no custom configs for a devnet).
+    CUSTOM_CONFIGS_CONTEXT=$(mktemp -d)
+    trap 'rm -rf "${CUSTOM_CONFIGS_CONTEXT}"' EXIT
+    docker buildx build \
+        --build-arg VARIANT=kona-client \
+        --build-arg KONA_CUSTOM_CONFIGS=false \
+        --build-context kona-custom-configs="${CUSTOM_CONFIGS_CONTEXT}" \
+        --output {{PATH}} \
+        --progress plain \
+        -f ../../chain/rust/kona/docker/fpvm-prestates/cannon-repro.dockerfile \
+        ../../chain/
+    # The kona Dockerfile emits prestate-proof.json / prestate.bin.gz, but
+    # pkg/deploy/prestate.go keys off the mt64-suffixed names. Rename to match.
+    mv "{{PATH}}/prestate-proof.json" "{{PATH}}/prestate-proof-mt64.json"
+    mv "{{PATH}}/prestate.bin.gz" "{{PATH}}/prestate-mt64.bin.gz"
 
 _docker_build TAG TARGET CONTEXT DOCKERFILE *ARGS: _prerequisites
     #!/usr/bin/env bash
@@ -43,7 +62,7 @@ op-wheel-image TAG='op-wheel:devnet': (_docker_build_stack TAG "op-wheel-target"
 op-faucet-image TAG='op-faucet:devnet': (_docker_build_stack TAG "op-faucet-target")
 op-interop-mon-image TAG='op-interop-mon:devnet': (_docker_build_stack TAG "op-interop-mon-target")
 
-op-reth-image TAG='op-reth:devnet': (_docker_build TAG "" "../../chain/rust" "op-reth/DockerfileOp" "--build-arg BUILD_PROFILE=release")
+op-reth-image TAG='op-reth:devnet': (_docker_build TAG "" "../../chain/rust" "op-reth/DockerfileOp" "--build-arg BUILD_PROFILE=release --build-context superchain-registry=../../chain/superchain-registry")
 
 op-program-builder-image TAG='op-program-builder:devnet': _prerequisites
     just op-program-svc/op-program-svc {{TAG}}

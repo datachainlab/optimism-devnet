@@ -11,9 +11,7 @@ import (
 	"github.com/datachainlab/optimism-devnet/devnet/devnet-sdk/types"
 	"github.com/ethereum-optimism/optimism/op-service/eth"
 	"github.com/ethereum-optimism/optimism/op-service/sources"
-	supervisorTypes "github.com/ethereum-optimism/optimism/op-supervisor/supervisor/types"
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/hexutil"
 	coreTypes "github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/ethereum/go-ethereum/params"
@@ -127,24 +125,9 @@ type RawTransaction interface {
 type InteropSystem interface {
 	System
 	InteropSet() InteropSet
-	Supervisor(context.Context) (Supervisor, error)
 }
 
 // InteropSet provides access to L2 chains in an interop environment
 type InteropSet interface {
 	L2s() []L2Chain
-}
-
-// Supervisor provides access to the query interface of the supervisor
-type Supervisor interface {
-	LocalUnsafe(context.Context, eth.ChainID) (eth.BlockID, error)
-	CrossSafe(context.Context, eth.ChainID) (supervisorTypes.DerivedIDPair, error)
-	Finalized(context.Context, eth.ChainID) (eth.BlockID, error)
-	FinalizedL1(context.Context) (eth.BlockRef, error)
-	CrossDerivedToSource(context.Context, eth.ChainID, eth.BlockID) (eth.BlockRef, error)
-	UpdateLocalUnsafe(context.Context, eth.ChainID, eth.BlockRef) error
-	UpdateLocalSafe(context.Context, eth.ChainID, eth.L1BlockRef, eth.BlockRef) error
-	SuperRootAtTimestamp(context.Context, hexutil.Uint64) (eth.SuperRootResponse, error)
-	AllSafeDerivedAt(context.Context, eth.BlockID) (derived map[eth.ChainID]eth.BlockID, err error)
-	SyncStatus(context.Context) (eth.SupervisorSyncStatus, error)
 }

@@ -1,14 +1,11 @@
 package system
 
 import (
-	"context"
 	"fmt"
 	"slices"
-	"sync"
 
 	"github.com/datachainlab/optimism-devnet/devnet/devnet-sdk/descriptors"
 	"github.com/datachainlab/optimism-devnet/devnet/devnet-sdk/shell/env"
-	"github.com/ethereum-optimism/optimism/op-service/dial"
 )
 
 type system struct {
@@ -82,8 +79,6 @@ type interopSystem struct {
 	*system
 
 	supervisorRPC string
-	supervisor    Supervisor
-	mu            sync.Mutex
 }
 
 // interopSystem implements InteropSystem
@@ -91,20 +86,4 @@ var _ InteropSystem = (*interopSystem)(nil)
 
 func (i *interopSystem) InteropSet() InteropSet {
 	return i.system // TODO: the interop set might not contain all L2s
-}
-
-func (i *interopSystem) Supervisor(ctx context.Context) (Supervisor, error) {
-	i.mu.Lock()
-	defer i.mu.Unlock()
-
-	if i.supervisor != nil {
-		return i.supervisor, nil
-	}
-
-	supervisor, err := dial.DialSupervisorClientWithTimeout(ctx, nil, i.supervisorRPC)
-	if err != nil {
-		return nil, fmt.Errorf("failed to dial supervisor RPC: %w", err)
-	}
-	i.supervisor = supervisor
-	return supervisor, nil
 }

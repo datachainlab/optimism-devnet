@@ -59,7 +59,11 @@ optimism_package:
         proposal_interval: 10m
   challengers:
     challenger:
-      enabled: true
+      # Disabled: op v1.19.1 removed op-program, and the pinned optimism-package
+      # (1bebdcf) still wires op-program-based fault-proof game types (cannon=0,
+      # permissioned=1), which can't run without op-program. The package is no
+      # longer updated, so the challenger is disabled to bring up a basic devnet.
+      enabled: false
       image: {{ localDockerImage "op-challenger" }}
       participants: "*"
       cannon_prestates_url: {{ localPrestate.URL }}
@@ -69,7 +73,7 @@ optimism_package:
     l1_artifacts_locator: {{ localContractArtifacts "l1" }}
     l2_artifacts_locator: {{ localContractArtifacts "l2" }}
     overrides:
-      faultGameAbsolutePrestate: {{ localPrestate.Hashes.prestate_mt64 }}
+      faultGameAbsolutePrestate: "0x{{ localPrestate.Hashes.prestate_mt64 | trimPrefix "0x" }}"
   global_log_level: "info"
   global_node_selectors: {}
   global_tolerations: []

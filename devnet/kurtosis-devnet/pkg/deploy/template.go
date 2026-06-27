@@ -152,6 +152,12 @@ func (f *Templater) localPrestateOption(ctx context.Context, buildWg *sync.WaitG
 			}()
 		}
 		if f.prestate.info == nil {
+			// If the async build already failed, surface the real error rather
+			// than silently emitting the dry-run placeholder, which would leak
+			// "dry_run_placeholder" into the deployed intent.toml.
+			if f.prestate.err != nil {
+				return nil, f.prestate.err
+			}
 			prestatePath := []string{"proofs", "op-program", "cannon"}
 			return &PrestateInfo{
 				URL: f.urlBuilder(prestatePath...),

@@ -142,7 +142,7 @@ optimism_package:
     l1_artifacts_locator: {{ $urls.l1_artifacts }}
     l2_artifacts_locator: {{ $urls.l2_artifacts }}
     overrides:
-      faultGameAbsolutePrestate: {{ localPrestate.Hashes.prestate_interop }}
+      faultGameAbsolutePrestate: "0x{{ localPrestate.Hashes.prestate_interop | trimPrefix "0x" }}"
   global_log_level: "info"
   global_node_selectors: {}
   global_tolerations: []

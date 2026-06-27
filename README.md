@@ -19,7 +19,7 @@ make chain
 To use a specific version:
 
 ```bash
-OP_TAG=op-node/v1.19.0 make chain
+OP_TAG=op-reth/v2.3.3 make chain
 ```
 
 ### Start Devnet
