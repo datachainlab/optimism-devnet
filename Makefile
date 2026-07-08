@@ -1,5 +1,5 @@
 SED = $(shell which gsed 2>/dev/null || echo sed)
-OP_TAG ?= op-node/v1.19.0
+OP_TAG ?= op-node/v1.19.1
 LODESTAR_VERSION ?= v1.41.1
 GETH_VERSION ?= v1.17.3
 
@@ -12,6 +12,10 @@ chain:
 	cp op-service/eth/config.go ./chain/op-service/eth/config.go
 	# Fix Dockerfile (dhi.io typo)
 	cp ops/docker/op-stack-go/Dockerfile ./chain/ops/docker/op-stack-go/Dockerfile
+	# Generate the gitignored superchain-configs.zip embed from the superchain-registry
+	# submodule (needs yq/jq/zip). optimism does not commit the zip, only its .sha256,
+	# so a fresh clone must regenerate it or `go run cmd/main.go` fails on the //go:embed.
+	cd chain && bash op-core/superchain/sync-superchain.sh
 	# Sync dependencies
 	cd devnet && go mod tidy
 

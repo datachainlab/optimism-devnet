@@ -13,7 +13,7 @@ import (
 	"github.com/datachainlab/optimism-devnet/devnet/devnet-sdk/types"
 	"github.com/ethereum-optimism/optimism/op-e2e/e2eutils/wait"
 	"github.com/ethereum-optimism/optimism/op-service/eth"
-	supervisorTypes "github.com/ethereum-optimism/optimism/op-supervisor/supervisor/types"
+	messages "github.com/ethereum-optimism/optimism/op-core/interop/messages"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
@@ -207,8 +207,8 @@ func (i *executeMessageImpl) Call(ctx context.Context) (any, error) {
 		return nil, fmt.Errorf("failed to build calldata: %w", err)
 	}
 	// Wrapper to use Access implementation
-	msg := supervisorTypes.Message{
-		Identifier: supervisorTypes.Identifier{
+	msg := messages.Message{
+		Identifier: messages.Identifier{
 			Origin:      i.identifier.Origin,
 			BlockNumber: bigs.Uint64Strict(i.identifier.BlockNumber),
 			LogIndex:    uint32(bigs.Uint64Strict(i.identifier.LogIndex)),
@@ -220,7 +220,7 @@ func (i *executeMessageImpl) Call(ctx context.Context) (any, error) {
 	access := msg.Access()
 	accessList := coreTypes.AccessList{{
 		Address:     constants.CrossL2Inbox,
-		StorageKeys: supervisorTypes.EncodeAccessList([]supervisorTypes.Access{access}),
+		StorageKeys: messages.EncodeAccessList([]messages.Access{access}),
 	}}
 	tx, err := builder.BuildTx(
 		WithFrom(i.from),

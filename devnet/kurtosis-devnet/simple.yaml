@@ -63,13 +63,22 @@ optimism_package:
       image: {{ localDockerImage "op-challenger" }}
       participants: "*"
       cannon_prestates_url: {{ localPrestate.URL }}
-      cannon_trace_types: ["cannon", "permissioned"]
+      # op v1.19.1 removed op-program, so the legacy `cannon` (game type 0) trace
+      # type can no longer run (its --cannon-server binary is gone). The
+      # `permissioned` (game type 1) trace type does NOT need op-program and
+      # shares the cannon-scoped flags the launcher already passes (rollup
+      # config, l2 genesis, prestates URL, cannon bin from the image env), so
+      # the challenger works with it alone. This matches proposer_params
+      # game_type: 1, so all games proposed on this devnet are covered.
+      # (`cannon-kona` — game type 8, kona-host based — would additionally need
+      # the optimism-package launcher to pass --cannon-kona-* flags.)
+      cannon_trace_types: ["permissioned"]
   op_contract_deployer_params:
     image: {{ localDockerImage "op-deployer" }}
     l1_artifacts_locator: {{ localContractArtifacts "l1" }}
     l2_artifacts_locator: {{ localContractArtifacts "l2" }}
     overrides:
-      faultGameAbsolutePrestate: {{ localPrestate.Hashes.prestate_mt64 }}
+      faultGameAbsolutePrestate: "0x{{ localPrestate.Hashes.prestate_mt64 | trimPrefix "0x" }}"
   global_log_level: "info"
   global_node_selectors: {}
   global_tolerations: []
@@ -90,8 +99,8 @@ ethereum_package:
     - el_type: geth
       el_image: ethpandaops/geth:bal-devnet-7
       cl_type: lodestar
-      cl_image: ethpandaops/lodestar:glamsterdam-devnet-5
-      vc_image: ethpandaops/lodestar:glamsterdam-devnet-5
+      cl_image: ethpandaops/lodestar:glamsterdam-devnet-6
+      vc_image: ethpandaops/lodestar:glamsterdam-devnet-6
       supernode: true
   network_params:
     preset: minimal
