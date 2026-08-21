@@ -88,7 +88,7 @@ require (
 	github.com/ipfs/go-cid v0.5.0 // indirect
 	github.com/ipfs/go-datastore v0.8.2 // indirect
 	github.com/jackpal/go-nat-pmp v1.0.2 // indirect
-	github.com/klauspost/compress v1.18.0 // indirect
+	github.com/klauspost/compress v1.18.7 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.10 // indirect
 	github.com/kr/pretty v0.3.1 // indirect
 	github.com/kr/text v0.2.0 // indirect
@@ -194,7 +194,9 @@ require (
 replace github.com/ethereum-optimism/optimism => ../chain
 
 // Use op-geth instead of go-ethereum
-replace github.com/ethereum/go-ethereum => github.com/ethereum-optimism/op-geth v1.101702.3-rc.5
+// Must match chain/go.mod's op-geth replace (op-node/v1.19.5 -> rc.6); rc.5 lacks
+// types.Header.BlockAccessListHash which op-service/sources now sets.
+replace github.com/ethereum/go-ethereum => github.com/ethereum-optimism/op-geth v1.101702.3-rc.6
 
 // Fix docker/docker vs moby/moby module path conflict
 replace github.com/docker/docker => github.com/docker/docker v27.5.1+incompatible

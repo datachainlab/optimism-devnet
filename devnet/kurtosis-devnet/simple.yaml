@@ -55,7 +55,19 @@ optimism_package:
       proposer_params:
         image: {{ localDockerImage "op-proposer" }}
         extra_params: []
-        game_type: 1
+        # Super Root proposals (game type 5 = SUPER_PERMISSIONED).
+        # op-deployer >= v1.19.x defaults `standard.DisputeGameType` to 5 and
+        # DevFeatures.SUPER_ROOT_GAMES_MIGRATION is enabled unconditionally, so the
+        # OPCM only accepts SUPER_PERMISSIONED(5) / SUPER_CANNON_KONA(9) as the
+        # initial game type — game type 1 is no longer deployable.
+        #
+        # For a super game type the optimism-package proposer launcher passes
+        # --superroot-rpcs (instead of --rollup-rpc; op-proposer requires exactly one
+        # of the two) pointing at op-node, which serves `superroot_atTimestamp`
+        # itself. That makes the proposer submit rootClaim = SuperRoot and
+        # extraData = SuperRootProof. op-supernode is only needed for a multi-chain
+        # interop dependency set.
+        game_type: 5
         proposal_interval: 10m
   challengers:
     challenger:
@@ -67,11 +79,22 @@ optimism_package:
       # type can no longer run (its --cannon-server binary is gone). The
       # `permissioned` (game type 1) trace type does NOT need op-program and
       # shares the cannon-scoped flags the launcher already passes (rollup
-      # config, l2 genesis, prestates URL, cannon bin from the image env), so
-      # the challenger works with it alone. This matches proposer_params
-      # game_type: 1, so all games proposed on this devnet are covered.
-      # (`cannon-kona` — game type 8, kona-host based — would additionally need
-      # the optimism-package launcher to pass --cannon-kona-* flags.)
+      # config, l2 genesis, prestates URL, cannon bin from the image env).
+      #
+      # With game type 5 proposals, op-challenger CANNOT play the games:
+      # `super-permissioned` is not in `PlayableGameTypes`, so --trace-type
+      # rejects it. It IS in `SupportedLifecycleGameTypes`, so the monitor keeps
+      # type 5 games for bond claim / close and logs
+      # "Game type not configured for play; processing lifecycle only"
+      # (op-challenger/game/monitor.go) instead of failing. That is fine here:
+      # SUPER_PERMISSIONED games resolve to DEFENDER_WINS as soon as they are
+      # created (observed resolvedAt == createdAt), so nothing has to play or
+      # resolve them. Keeping `permissioned` here means the challenger boots with
+      # the flags the launcher already supplies and stays harmless (it only warns
+      # "No game implementation set for game type gameType=permissioned").
+      # (`super-cannon-kona` — game type 9 — would let the challenger resolve on
+      # its own, but needs --superroot-rpc plus the --cannon-kona-* flags and a
+      # kona-client-int prestate, none of which the launcher passes today.)
       cannon_trace_types: ["permissioned"]
   op_contract_deployer_params:
     image: {{ localDockerImage "op-deployer" }}
@@ -88,8 +111,8 @@ ethereum_package:
     - el_type: geth
       el_image: ethereum/client-go:{{ env "GETH_VERSION" | default "v1.17.3" }}
       cl_type: lodestar
-      cl_image: chainsafe/lodestar:{{ env "LODESTAR_VERSION" | default "v1.41.1" }}
-      vc_image: chainsafe/lodestar:{{ env "LODESTAR_VERSION" | default "v1.41.1" }}
+      cl_image: chainsafe/lodestar:{{ env "LODESTAR_VERSION" | default "v1.46.0" }}
+      vc_image: chainsafe/lodestar:{{ env "LODESTAR_VERSION" | default "v1.46.0" }}
       supernode: true
   network_params:
     preset: minimal
