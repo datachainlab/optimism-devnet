@@ -3,6 +3,6 @@ description: |-
   A trampoline package for optimism-package. This one is reproducible, due to the replace directives below.
 replace:
   github.com/datachainlab/optimism-package: github.com/datachainlab/optimism-package@5e4a9ad8e3f10508a531e46b71280ccf0382115b
-  github.com/ethpandaops/ethereum-package: github.com/ethpandaops/ethereum-package@e964e305a19d56b798800e84d264f97b87952c55
+  github.com/ethpandaops/ethereum-package: github.com/ethpandaops/ethereum-package@d58cab71d0e4ea0f75752232a2a78b024e2bf8a4
   github.com/kurtosis-tech/prometheus-package: github.com/kurtosis-tech/prometheus-package@637c9dea933be18e47f96cadc0d9bb0e3a5aa9d6 # v1.0.0
   github.com/kurtosis-tech/postgres-package: github.com/kurtosis-tech/postgres-package@9cbdde2c55e8d1656deb87821465a2ad244d8b33 # v1.0.0
