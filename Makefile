@@ -1,7 +1,8 @@
 SED = $(shell which gsed 2>/dev/null || echo sed)
-OP_TAG ?= op-node/v1.19.1
-LODESTAR_VERSION ?= v1.41.1
-GETH_VERSION ?= v1.17.3
+OP_TAG ?= op-node/v1.19.5
+# L1 clients, kept identical to the cosmos-ethereum-ibc-lcp e2e devnet.
+GETH_IMAGE ?= ethpandaops/geth:glamsterdam-devnet-8
+LODESTAR_IMAGE ?= ghcr.io/yoshidan/lodestar:pr10022-3cf74461
 
 .PHONY: chain
 chain:
@@ -21,7 +22,7 @@ chain:
 
 .PHONY: devnet-up
 devnet-up:
-	cd devnet/kurtosis-devnet && GETH_VERSION=$(GETH_VERSION) LODESTAR_VERSION=$(LODESTAR_VERSION) just simple-devnet
+	cd devnet/kurtosis-devnet && GETH_IMAGE=$(GETH_IMAGE) LODESTAR_IMAGE=$(LODESTAR_IMAGE) just simple-devnet
 
 .PHONY: devnet-down
 devnet-down:

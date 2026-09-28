@@ -18,17 +18,25 @@ _prestate-build PATH='.':
     CUSTOM_CONFIGS_CONTEXT=$(mktemp -d)
     trap 'rm -rf "${CUSTOM_CONFIGS_CONTEXT}"' EXIT
     docker buildx build \
-        --build-arg VARIANT=kona-client \
         --build-arg KONA_CUSTOM_CONFIGS=false \
         --build-context kona-custom-configs="${CUSTOM_CONFIGS_CONTEXT}" \
         --output {{PATH}} \
         --progress plain \
         -f ../../chain/rust/kona/docker/fpvm-prestates/cannon-repro.dockerfile \
         ../../chain/
-    # The kona Dockerfile emits prestate-proof.json / prestate.bin.gz, but
-    # pkg/deploy/prestate.go keys off the mt64-suffixed names. Rename to match.
-    mv "{{PATH}}/prestate-proof.json" "{{PATH}}/prestate-proof-mt64.json"
-    mv "{{PATH}}/prestate.bin.gz" "{{PATH}}/prestate-mt64.bin.gz"
+    # Between op-node/v1.19.1 and v1.19.5 the Dockerfile dropped the VARIANT build arg
+    # and started building every rust/justfile KONA_PRESTATE_VARIANTS entry in one pass,
+    # exporting one directory per variant:
+    #   prestate-artifacts-cannon        <- kona-client      (non-interop)
+    #   prestate-artifacts-cannon-interop <- kona-client-int (interop, needed by game type 9)
+    # Flatten both into the flat names pkg/deploy/prestate.go keys off
+    # (prestate-proof-{mt64,interop}.json plus the matching prestate-{mt64,interop}.bin.gz,
+    # which it then renames to <prestate hash>.{json,bin.gz} and serves over HTTP).
+    mv "{{PATH}}/prestate-artifacts-cannon/prestate-proof.json" "{{PATH}}/prestate-proof-mt64.json"
+    mv "{{PATH}}/prestate-artifacts-cannon/prestate.bin.gz" "{{PATH}}/prestate-mt64.bin.gz"
+    mv "{{PATH}}/prestate-artifacts-cannon-interop/prestate-proof.json" "{{PATH}}/prestate-proof-interop.json"
+    mv "{{PATH}}/prestate-artifacts-cannon-interop/prestate.bin.gz" "{{PATH}}/prestate-interop.bin.gz"
+    rm -rf "{{PATH}}/prestate-artifacts-cannon" "{{PATH}}/prestate-artifacts-cannon-interop"
 
 _docker_build TAG TARGET CONTEXT DOCKERFILE *ARGS: _prerequisites
     #!/usr/bin/env bash
