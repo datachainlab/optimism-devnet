@@ -1,4 +1,8 @@
 SED = $(shell which gsed 2>/dev/null || echo sed)
+# Must stay in step with the optimism-package rev in
+# devnet/kurtosis-devnet/optimism-package-trampoline/kurtosis.yml: op-deployer and the
+# package's contract deployment have to agree, or DeploySuperchain reverts with
+# "unrecognized 4 byte signature".
 OP_TAG ?= op-node/v1.19.5
 # L1 clients, kept identical to the cosmos-ethereum-ibc-lcp e2e devnet.
 GETH_IMAGE ?= ethpandaops/geth:glamsterdam-devnet-8

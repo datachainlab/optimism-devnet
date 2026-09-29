@@ -202,7 +202,9 @@ require (
 replace github.com/ethereum-optimism/optimism => ../chain
 
 // Use op-geth instead of go-ethereum
-replace github.com/ethereum/go-ethereum => github.com/ethereum-optimism/op-geth v1.101702.3-rc.2
+// Must match chain/go.mod's op-geth replace (op-node/v1.19.5 -> rc.6); rc.2 lacks
+// params.ChainConfig.LagoonTime, which chain/op-core/params/geth.go sets.
+replace github.com/ethereum/go-ethereum => github.com/ethereum-optimism/op-geth v1.101702.3-rc.6
 
 // Fix docker/docker vs moby/moby module path conflict
 replace github.com/docker/docker => github.com/docker/docker v27.5.1+incompatible

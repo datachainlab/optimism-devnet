@@ -2,12 +2,13 @@ name: github.com/ethereum-optimism/optimism/kurtosis-devnet/optimism-package-tra
 description: |-
   A trampoline package for optimism-package. This one is reproducible, due to the replace directives below.
 replace:
-  # Bumped from 1bebdcf to 510ca80 (feature/glamsterdam HEAD on origin) for the
-  # glamsterdam fixes. It targets ethereum-package@d793f8cb (its el context's
-  # new_el_context() requires the `dns_name` arg added in that bump).
-  github.com/datachainlab/optimism-package: github.com/datachainlab/optimism-package@510ca80890ecd7d1eb9eba86c560849e1f19d032
+  # feature/glamsterdam_upgrade20: the glamsterdam commit rebased onto main, so it has
+  # both the Upgrade 20 super root dispute games (needed by op-node/v1.19.5) and the
+  # glamsterdam support. It targets ethereum-package@d793f8cb, whose el context
+  # new_el_context() requires the `dns_name` arg added in that bump.
+  github.com/datachainlab/optimism-package: github.com/datachainlab/optimism-package@9b914b09ea666a9f097565df09b7305fdb91f2a5
   # Bumped from e964e305 (Sep 2025) to d793f8cb (Apr 2026) to match what
-  # optimism-package@510ca80 expects. d793f8cb also dropped geth's removed
+  # optimism-package@9b914b0 expects. d793f8cb also dropped geth's removed
   # `--allow-insecure-unlock` flag and defaults the genesis generator to 6.x.
   github.com/ethpandaops/ethereum-package: github.com/ethpandaops/ethereum-package@d793f8cb0aebc1218f870f52ea61c8007129203c
   github.com/kurtosis-tech/prometheus-package: github.com/kurtosis-tech/prometheus-package@f5ce159aec728898e3deb827f6b921f8ecfc527f

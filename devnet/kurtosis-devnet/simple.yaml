@@ -131,7 +131,13 @@ ethereum_package:
   network_params:
     preset: minimal
     fulu_fork_epoch: 0
-    gloas_fork_epoch: 2
+    # op-deployer needs ~29 transactions to stand the L2 up, which takes several
+    # minutes. Any of them that lands in the first Amsterdam block reverts: the gas is
+    # estimated under the pre-fork rules and the inner CREATE2 then runs out under the
+    # post-fork ones. Keep the fork far enough out that deployment finishes first —
+    # epoch 16 = 768s at 6s slots, against roughly 350s of deployment.
+    # Must stay in step with AmsterdamTime in op-service/eth/config.go.
+    gloas_fork_epoch: 16
     genesis_delay: 5
     bpo_1_epoch: 0
     bpo_1_max_blobs: 15
