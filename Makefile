@@ -6,7 +6,7 @@ SED = $(shell which gsed 2>/dev/null || echo sed)
 OP_TAG ?= op-node/v1.19.7
 # L1 clients, kept identical to the cosmos-ethereum-ibc-lcp e2e devnet.
 GETH_IMAGE ?= ethereum/client-go:v1.17.6
-LODESTAR_IMAGE ?= ghcr.io/yoshidan/lodestar:pr10022-3cf74461
+LODESTAR_IMAGE ?= ghcr.io/yoshidan/lodestar:v1.49.0-pr10022-9e69ac91
 
 .PHONY: chain
 chain:

@@ -120,14 +120,14 @@ ethereum_package:
     #     on Sepolia, so the ethpandaops glamsterdam-devnet build is no longer needed.
     #     (ethrex:glamsterdam-devnet-5 was unusable: its eth_call enforces nonce
     #     equality, which breaks op-deployer's `apply` step.)
-    #   lodestar: build of ChainSafe/lodestar PR #10022, which fixes the archiver
-    #     deleting the light client data of canonical Gloas blocks. Switch to
-    #     chainsafe/lodestar:next once it lands.
+    #   lodestar: v1.49.0 with ChainSafe/lodestar PR #10022 cherry-picked, which fixes
+    #     the archiver deleting the light client data of canonical Gloas blocks.
+    #     Switch to a stock release once the PR lands.
     - el_type: geth
       el_image: {{ env "GETH_IMAGE" | default "ethereum/client-go:v1.17.6" }}
       cl_type: lodestar
-      cl_image: {{ env "LODESTAR_IMAGE" | default "ghcr.io/yoshidan/lodestar:pr10022-3cf74461" }}
-      vc_image: {{ env "LODESTAR_IMAGE" | default "ghcr.io/yoshidan/lodestar:pr10022-3cf74461" }}
+      cl_image: {{ env "LODESTAR_IMAGE" | default "ghcr.io/yoshidan/lodestar:v1.49.0-pr10022-9e69ac91" }}
+      vc_image: {{ env "LODESTAR_IMAGE" | default "ghcr.io/yoshidan/lodestar:v1.49.0-pr10022-9e69ac91" }}
       supernode: true
   network_params:
     preset: minimal
