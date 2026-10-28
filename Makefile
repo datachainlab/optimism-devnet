@@ -1,18 +1,17 @@
 SED = $(shell which gsed 2>/dev/null || echo sed)
-# Baseline tag; one tag pins the whole stack, since op-node/v1.19.7 is the same commit
-# as op-reth/v2.4.4, op-batcher/v1.17.0 and kona-node/v1.7.0. Callers may override it,
-# but two things have to keep agreeing with whatever they pick:
+# Baseline tag; one tag pins the whole stack, since op-node/v1.20.0 is the same commit
+# as op-reth/v2.8.0. Callers may override it, but two things have to keep agreeing with
+# whatever they pick:
 #   - the op-geth replace in devnet/go.mod. A mismatch fails the build on fields the
 #     older op-geth does not know (e.g. LagoonTime).
 #   - the optimism-package rev in
 #     devnet/kurtosis-devnet/optimism-package-trampoline/kurtosis.yml. op-deployer and
 #     the package's contract deployment have to agree, or DeploySuperchain reverts with
 #     "unrecognized 4 byte signature".
-# op-node/v1.19.8 (= op-reth/v2.5.0) is known to work: same op-geth, same package rev.
-OP_TAG ?= op-node/v1.19.7
+OP_TAG ?= op-node/v1.20.0
 # L1 clients, kept identical to the cosmos-ethereum-ibc-lcp e2e devnet.
 GETH_IMAGE ?= ethereum/client-go:v1.17.6
-LODESTAR_IMAGE ?= ghcr.io/yoshidan/lodestar:v1.49.0-pr10022-9e69ac91
+LODESTAR_IMAGE ?= chainsafe/lodestar:v1.51.0-rc.0
 
 .PHONY: chain
 chain:

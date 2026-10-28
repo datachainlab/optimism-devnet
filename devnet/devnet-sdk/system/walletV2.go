@@ -10,7 +10,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethclient"
-	"github.com/ethereum/go-ethereum/log"
+	oplog "github.com/ethereum-optimism/optimism/op-service/log"
 	"github.com/ethereum/go-ethereum/rpc"
 )
 
@@ -47,7 +47,7 @@ func NewWalletV2FromWalletAndChain(ctx context.Context, wallet Wallet, chain Cha
 	}, nil
 }
 
-func NewWalletV2(ctx context.Context, rpcURL string, priv *ecdsa.PrivateKey, clCfg *sources.EthClientConfig, log log.Logger) (*walletV2, error) {
+func NewWalletV2(ctx context.Context, rpcURL string, priv *ecdsa.PrivateKey, clCfg *sources.EthClientConfig, log oplog.Logger) (*walletV2, error) {
 	if clCfg == nil {
 		clCfg = sources.DefaultEthClientConfig(10)
 	}

@@ -9,7 +9,7 @@ import (
 
 	"github.com/ethereum-optimism/optimism/op-service/client"
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/log"
+	oplog "github.com/ethereum-optimism/optimism/op-service/log"
 	"github.com/ethereum/go-ethereum/params"
 )
 
@@ -69,7 +69,7 @@ func L1ChainConfigByChainID(chainID ChainID) *params.ChainConfig {
 func newUint64(val uint64) *uint64 { return &val }
 
 func getGenesis() uint64 {
-	logger := log.NewLogger(slog.Default().Handler())
+	logger := oplog.NewLogger(slog.Default().Handler())
 	cl := client.NewBasicHTTPClient("http://cl-1-lodestar-geth:4000", logger)
 	headers := http.Header{}
 	headers.Add("Accept", "application/json")

@@ -3,6 +3,7 @@ package util
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -16,7 +17,7 @@ import (
 	"github.com/docker/docker/api/types/volume"
 	"github.com/docker/docker/client"
 	"github.com/docker/go-connections/nat"
-	"github.com/ethereum/go-ethereum/log"
+	oplog "github.com/ethereum-optimism/optimism/op-service/log"
 	"github.com/ethereum/go-ethereum/rpc"
 
 	opClient "github.com/ethereum-optimism/optimism/op-service/client"
@@ -265,7 +266,7 @@ func testEthNode(ctx context.Context, rpcClient *rpc.Client) error {
 		MethodResetDuration:   time.Minute,
 	}
 
-	ethClient, err := sources.NewEthClient(baseClient, log.Root(), nil, ethConfig)
+	ethClient, err := sources.NewEthClient(baseClient, oplog.NewLogger(slog.Default().Handler()), nil, ethConfig)
 	if err != nil {
 		return fmt.Errorf("failed to create EthClient: %w", err)
 	}

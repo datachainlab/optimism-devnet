@@ -1,6 +1,7 @@
 package system
 
 import (
+	"log/slog"
 	"context"
 	"fmt"
 	"math/big"
@@ -15,7 +16,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	coreTypes "github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
-	"github.com/ethereum/go-ethereum/log"
+	oplog "github.com/ethereum-optimism/optimism/op-service/log"
 	"github.com/ethereum/go-ethereum/params"
 	"github.com/ethereum/go-ethereum/rpc"
 )
@@ -84,7 +85,7 @@ func (m *clientManager) Client(rpcURL string) (*sources.EthClient, error) {
 	if err != nil {
 		return nil, err
 	}
-	ethCl, err := sources.NewEthClient(client.NewBaseRPCClient(rpcClient), log.Root(), nil, &ethClCfg)
+	ethCl, err := sources.NewEthClient(client.NewBaseRPCClient(rpcClient), oplog.NewLogger(slog.Default().Handler()), nil, &ethClCfg)
 	if err != nil {
 		return nil, err
 	}

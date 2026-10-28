@@ -14,7 +14,7 @@ import (
 	"github.com/datachainlab/optimism-devnet/devnet/kurtosis-devnet/pkg/kurtosis/sources/inspect/flags"
 	opservice "github.com/ethereum-optimism/optimism/op-service"
 	"github.com/ethereum-optimism/optimism/op-service/cliapp"
-	oplog "github.com/ethereum-optimism/optimism/op-service/log"
+	"github.com/ethereum-optimism/optimism/op-service/log/logcli"
 )
 
 var (
@@ -47,8 +47,8 @@ func run(cliCtx *cli.Context, closeApp context.CancelCauseFunc) (cliapp.Lifecycl
 	}
 
 	// Setup logging
-	log := oplog.NewLogger(oplog.AppOut(cliCtx), oplog.ReadCLIConfig(cliCtx))
-	oplog.SetGlobalLogHandler(log.Handler())
+	log := logcli.NewLogger(logcli.AppOut(cliCtx), logcli.ReadCLIConfig(cliCtx))
+	logcli.SetGlobalLogHandler(log.Handler())
 
 	// Create service
 	service := inspect.NewInspectService(cfg, log)
