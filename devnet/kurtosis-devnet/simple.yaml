@@ -112,7 +112,7 @@ ethereum_package:
   # `blobSchedule`. geth rejects that ("missing entry for fork amsterdam in
   # blobSchedule"). 6.x emits the amsterdam blob schedule for gloas/Amsterdam.
   ethereum_genesis_generator_params:
-    image: ethpandaops/ethereum-genesis-generator:6.0.8
+    image: ethpandaops/ethereum-genesis-generator:6.2.7
   participants:
     # L1 clients are kept identical to the cosmos-ethereum-ibc-lcp e2e devnet, so the
     # ethereum light client is exercised against the same pair on both sides.
@@ -122,6 +122,11 @@ ethereum_package:
     #     equality, which breaks op-deployer's `apply` step.)
     - el_type: geth
       el_image: {{ env "GETH_IMAGE" | default "ethereum/client-go:v1.17.6" }}
+      # EIP-7928 block access lists make the L2 deployment transactions much more
+      # expensive: the biggest estimates at ~34M gas, which at op-deployer's 50 gwei tip
+      # is ~1.75 ETH and over geth's 1 ETH default.
+      el_extra_params:
+        - --rpc.txfeecap=0
       cl_type: lodestar
       cl_image: {{ env "LODESTAR_IMAGE" | default "chainsafe/lodestar:v1.51.0-rc.0" }}
       vc_image: {{ env "LODESTAR_IMAGE" | default "chainsafe/lodestar:v1.51.0-rc.0" }}
@@ -129,13 +134,13 @@ ethereum_package:
   network_params:
     preset: minimal
     fulu_fork_epoch: 0
-    # op-deployer needs ~29 transactions to stand the L2 up, which takes several
-    # minutes. Any of them that lands in the first Amsterdam block reverts: the gas is
-    # estimated under the pre-fork rules and the inner CREATE2 then runs out under the
-    # post-fork ones. Keep the fork far enough out that deployment finishes first —
-    # epoch 16 = 768s at 6s slots, against roughly 350s of deployment.
+    # op-deployer needs 29 transactions to stand the L2 up. Any of them that lands in
+    # the first Amsterdam block reverts: the gas is estimated under the pre-fork rules
+    # and runs out under the post-fork ones. Measured deployment is ~294s, so epoch 10
+    # (480s at 6s slots) clears it. epoch 2 was tried and the 8th transaction reverted
+    # in the first Amsterdam block.
     # Must stay in step with AmsterdamTime in op-service/eth/config.go.
-    gloas_fork_epoch: 16
+    gloas_fork_epoch: 10
     genesis_delay: 5
     bpo_1_epoch: 0
     bpo_1_max_blobs: 15

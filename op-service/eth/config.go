@@ -8,8 +8,8 @@ import (
 	"net/http"
 
 	"github.com/ethereum-optimism/optimism/op-service/client"
-	"github.com/ethereum/go-ethereum/common"
 	oplog "github.com/ethereum-optimism/optimism/op-service/log"
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/params"
 )
 
@@ -52,7 +52,7 @@ func L1ChainConfigByChainID(chainID ChainID) *params.ChainConfig {
 			OsakaTime:               newUint64(0),
 			BPO1Time:                newUint64(0),                         // bpo_1_epoch: 0 (genesis)
 			BPO2Time:                newUint64(genesisTimestamp + 1*8*6),  // bpo_2_epoch: 1 = 48 seconds
-			AmsterdamTime:           newUint64(genesisTimestamp + 16*8*6), // gloas_fork_epoch: 16 = 768 seconds
+			AmsterdamTime:           newUint64(genesisTimestamp + 10*8*6), // gloas_fork_epoch: 10 = 480 seconds
 			DepositContractAddress:  common.HexToAddress("0x00000000219ab540356cbb839cbe05303d7705fa"),
 			BlobScheduleConfig: &params.BlobScheduleConfig{
 				Cancun:    params.DefaultCancunBlobConfig,
