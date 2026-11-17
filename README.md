@@ -19,7 +19,7 @@ make chain
 To use a specific version:
 
 ```bash
-OP_TAG=op-node/v1.19.7 make chain
+OP_TAG=op-node/v1.20.0 make chain
 ```
 
 ### Start Devnet
@@ -31,7 +31,7 @@ make devnet-up
 To use specific client versions:
 
 ```bash
-GETH_VERSION=v1.17.5 LODESTAR_VERSION=v1.47.0 make devnet-up
+GETH_VERSION=v1.17.6 LODESTAR_VERSION=v1.51.0 make devnet-up
 ```
 
 ### Stop Devnet

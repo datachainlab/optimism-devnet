@@ -128,8 +128,8 @@ ethereum_package:
       el_extra_params:
         - --rpc.txfeecap=0
       cl_type: lodestar
-      cl_image: {{ env "LODESTAR_IMAGE" | default "chainsafe/lodestar:v1.51.0-rc.0" }}
-      vc_image: {{ env "LODESTAR_IMAGE" | default "chainsafe/lodestar:v1.51.0-rc.0" }}
+      cl_image: {{ env "LODESTAR_IMAGE" | default "chainsafe/lodestar:v1.51.0" }}
+      vc_image: {{ env "LODESTAR_IMAGE" | default "chainsafe/lodestar:v1.51.0" }}
       supernode: true
   network_params:
     preset: minimal
